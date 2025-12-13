@@ -4,6 +4,8 @@ import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Sweets from "./pages/Sweets";
+import Admin from "./pages/Admin";
 import "./index.css"
 
 export default function App() {
@@ -17,6 +19,8 @@ return (
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/sweets" element={<Sweets />} />
+        <Route path="/admin" element={<Admin />} />
       </Routes>
     </main>
 

@@ -6,7 +6,7 @@ return (
 <header className="bg-white shadow">
 <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
 <Link to="/" className="text-2xl font-bold text-pink-600">
-Sweet Shop
+AI KATA Sweet Shop
 </Link>
 <nav className="space-x-4">
 <Link to="/login" className="text-sm font-medium hover:text-pink-600">

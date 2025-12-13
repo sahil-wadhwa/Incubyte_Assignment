@@ -4,23 +4,24 @@ import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import "./index.css"
 
 export default function App() {
 return (
 <Router>
-<div className="min-h-screen flex flex-col bg-gray-100 text-gray-800">
-<Navbar />
+  <div className="min-h-screen flex flex-col bg-gray-100 text-gray-800">
+    <Navbar />
 
-<main className="flex-grow">
-<Routes>
-<Route path="/" element={<Home />} />
-<Route path="/login" element={<Login />} />
-<Route path="/register" element={<Register />} />
-</Routes>
-</main>
+    <main className="flex-grow">
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+      </Routes>
+    </main>
 
-<Footer />
-</div>
+    <Footer />
+  </div>
 </Router>
 );
 }

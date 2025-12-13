@@ -1,16 +1,36 @@
 import React from "react";
 
-export default function SweetCard({ name, category, price }) {
+export default function SweetCard({ name, category, price, inStock = true }) {
 return (
-<div className="bg-white rounded-xl shadow p-6 flex flex-col justify-between">
-<div>
-<h4 className="text-lg font-bold">{name}</h4>
-<p className="text-sm text-gray-500">Category: {category}</p>
-<p className="mt-2 font-semibold">₹{price}</p>
+<div className="group relative bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden">
+{/* Image Placeholder */}
+<div className="h-40 bg-gradient-to-br from-pink-100 to-orange-100 flex items-center justify-center">
+<span className="text-6xl">🍰</span>
 </div>
-<button className="mt-4 bg-green-500 text-white py-2 rounded hover:bg-green-600">
-Purchase
+
+{/* Content */}
+<div className="p-6">
+<div className="flex justify-between items-start mb-2">
+<h4 className="text-lg font-semibold group-hover:text-pink-600 transition">
+{name}
+</h4>
+<span className={`text-xs px-2 py-1 rounded-full ${inStock ? "bg-green-100 text-green-700" : "bg-red-100 text-red-600"}`}>
+{inStock ? "In Stock" : "Out of Stock"}
+</span>
+</div>
+
+<p className="text-sm text-gray-500 mb-4">Category: {category}</p>
+
+<div className="flex justify-between items-center">
+<p className="text-xl font-bold text-gray-800">₹{price}</p>
+<button
+disabled={!inStock}
+className={`px-4 py-2 rounded-xl text-sm font-medium transition ${inStock ? "bg-pink-600 text-white hover:bg-pink-700" : "bg-gray-300 text-gray-500 cursor-not-allowed"}`}
+>
+Buy Now
 </button>
+</div>
+</div>
 </div>
 );
 }

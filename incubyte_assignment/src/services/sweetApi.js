@@ -25,3 +25,9 @@ export const restockSweet = (id, amount, token) =>
     body: { amount },
     token,
   });
+
+export const deleteSweet = (id, token) =>
+  apiRequest(`/sweets/${id}`, {
+    method: "DELETE",
+    token,
+  });

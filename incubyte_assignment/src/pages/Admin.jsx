@@ -3,6 +3,7 @@ import {
   getSweets,
   createSweet,
   restockSweet,
+  deleteSweet,
 } from "../services/sweetApi";
 import { getToken } from "../utils/auth";
 import { apiRequest } from "../services/api";
@@ -16,6 +17,7 @@ export default function Admin() {
     quantity: "",
   });
   const [email, setEmail] = useState("");
+  const [restockAmount, setRestockAmount] = useState(1);
 
   const promoteUser = async () => {
     await apiRequest("/auth/make-admin", {
@@ -43,7 +45,14 @@ export default function Admin() {
   };
 
   const handleRestock = async (id) => {
-    await restockSweet(id, 10, getToken());
+    await restockSweet(id, restockAmount, getToken());
+    setRestockAmount(1);
+    loadSweets();
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this sweet?")) return;
+    await deleteSweet(id, getToken());
     loadSweets();
   };
 
@@ -106,12 +115,27 @@ export default function Admin() {
               <h3 className="font-semibold">{sweet.name}</h3>
               <p className="text-sm">Qty: {sweet.quantity}</p>
             </div>
-            <button
-              onClick={() => handleRestock(sweet._id)}
-              className="bg-red-600 text-white px-4 py-2 rounded"
-            >
-              Restock +10
-            </button>
+            <div className="flex items-center gap-2">
+              <input
+                type="number"
+                min="1"
+                value={restockAmount}
+                onChange={(e) => setRestockAmount(Number(e.target.value))}
+                className="w-20 border rounded p-1"
+              />
+              <button
+                onClick={() => handleRestock(sweet._id)}
+                className="bg-red-600 text-white px-3 py-1 rounded"
+              >
+                Restock
+              </button>
+              <button
+                onClick={() => handleDelete(sweet._id)}
+                className="text-red-600 text-sm"
+              >
+                Delete
+              </button>
+            </div>
           </div>
         ))}
       </div>

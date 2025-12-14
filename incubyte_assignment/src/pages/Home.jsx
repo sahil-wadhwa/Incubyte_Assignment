@@ -1,21 +1,36 @@
-import React from "react";
-import SweetCard from "../components/SweetCard";
+import React, { useEffect, useState } from "react";
+import Navbar from "../components/Navbar";
 import { Link } from "react-router-dom";
 
 export default function Home() {
-const sweets = [
-{ id: 1, name: "Gulab Jamun", category: "Dessert", price: 200 },
-{ id: 2, name: "Rasgulla", category: "Dessert", price: 180 },
-{ id: 3, name: "Kaju Katli", category: "Premium", price: 500 },
-{ id: 4, name: "Ladoo", category: "Traditional", price: 150 },
-{ id: 5, name: "Barfi", category: "Traditional", price: 220 },
-{ id: 6, name: "Mysore Pak", category: "Premium", price: 350 },
-];
+  const [scrolled, setScrolled] = useState(false);
 
-return (
-<>
-{/* Hero Section */}
-<section className="relative bg-white">
+  useEffect(() => {
+    const onScroll = () => {
+      setScrolled(window.scrollY > 40);
+    };
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return (
+    <>
+      <div
+        className={`transition-all duration-300 ${
+          scrolled
+            ? "opacity-0 -translate-y-6 pointer-events-none"
+            : "opacity-100 translate-y-0"
+        }`}
+      >
+        <Navbar variant="static" />
+      </div>
+      {scrolled && (
+        <div className="animate-fade-in">
+          <Navbar variant="floating" />
+        </div>
+      )}
+      {/* Hero Section */}
+      <section className="relative bg-white pt-24">
     <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/src/assets/sweet.jpg')", height: "500px", width: "100%" }} />
     <div className="z-100 max-w-7xl mx-auto px-6 py-24 grid md:grid-cols-2 gap-12 items-center">
         <div className="hidden md:block">
@@ -103,24 +118,62 @@ return (
   </div>
 </section>
 
-{/* Sweets Grid */}
-<section className="bg-gray-100">
-<div className="max-w-7xl mx-auto px-6 py-20">
-<div className="flex justify-between items-center mb-10">
-<h3 className="text-3xl font-bold">Popular Sweets</h3>
-<button className="text-red-600 font-medium hover:underline">
-View All
-</button>
-</div>
-<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-{sweets.map((sweet) => (
-<SweetCard key={sweet.id} {...sweet} />
-))}
-</div>
-</div>
+{/* Cool Offers Section */}
+<section className="relative bg-gradient-to-br from-red-50 via-white to-red-100 py-24 overflow-hidden">
+  {/* Decorative blobs */}
+  <div className="absolute -top-20 -left-20 w-96 h-96 bg-red-200/40 rounded-full blur-3xl"></div>
+  <div className="absolute bottom-0 -right-24 w-96 h-96 bg-red-300/30 rounded-full blur-3xl"></div>
+
+  <div className="relative max-w-7xl mx-auto px-6">
+    <div className="text-center mb-16">
+      <h3 className="text-4xl font-extrabold mb-4">
+        Sweet Deals You’ll Love 🍫
+      </h3>
+      <p className="text-gray-600 max-w-2xl mx-auto">
+        Grab exclusive offers and festive discounts on your favorite sweets.
+      </p>
+    </div>
+
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+      {/* Offer Card */}
+      <div className="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition">
+        <div className="text-5xl mb-6">🔥</div>
+        <h4 className="text-2xl font-bold mb-2">Festival Bonanza</h4>
+        <p className="text-gray-600 mb-6">
+          Flat <span className="font-semibold text-red-600">20% OFF</span> on all
+          traditional sweets this festive season.
+        </p>
+        <button className="text-red-600 font-semibold hover:underline">
+          Explore Offers →
+        </button>
+      </div>
+
+      <div className="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition">
+        <div className="text-5xl mb-6">🎁</div>
+        <h4 className="text-2xl font-bold mb-2">Combo Packs</h4>
+        <p className="text-gray-600 mb-6">
+          Buy curated sweet boxes and save more on bulk purchases.
+        </p>
+        <button className="text-red-600 font-semibold hover:underline">
+          View Combos →
+        </button>
+      </div>
+
+      <div className="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition">
+        <div className="text-5xl mb-6">⚡</div>
+        <h4 className="text-2xl font-bold mb-2">Limited Time Flash Sale</h4>
+        <p className="text-gray-600 mb-6">
+          Special discounts available for a short time only. Don’t miss out!
+        </p>
+        <button className="text-red-600 font-semibold hover:underline">
+          Shop Now →
+        </button>
+      </div>
+    </div>
+  </div>
 </section>
-</>
-);
+    </>
+  );
 }
 <section className="bg-red-50 py-20">
 <div className="max-w-4xl mx-auto text-center px-6">

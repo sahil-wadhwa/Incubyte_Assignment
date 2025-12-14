@@ -1,102 +1,107 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
+import { getSweets, createSweet, deleteSweet } from "../services/sweetApi";
 
 export default function Admin() {
-  const [formData, setFormData] = useState({
+  const [sweets, setSweets] = useState([]);
+  const [form, setForm] = useState({
     name: "",
-    category: "",
+    category: "Dessert",
     price: "",
     quantity: "",
   });
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+  const loadSweets = async () => {
+    const data = await getSweets();
+    setSweets(data);
   };
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    loadSweets();
+  }, []);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("New Sweet:", formData);
-    alert("Sweet submitted (API integration later)");
-    setFormData({
-      name: "",
-      category: "",
-      price: "",
-      quantity: "",
-    });
+    await createSweet(form);
+    setForm({ name: "", category: "Dessert", price: "", quantity: "" });
+    loadSweets();
+  };
+
+  const handleDelete = async (id) => {
+    await deleteSweet(id);
+    loadSweets();
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-16">
-      <h1 className="text-3xl font-bold mb-8">Admin Dashboard</h1>
+    <div className="max-w-5xl mx-auto px-6 py-20">
+      <h1 className="text-3xl font-bold mb-8">Admin Panel</h1>
 
-      {/* Add Sweet Form */}
-      <div className="bg-white shadow rounded-2xl p-8">
-        <h2 className="text-xl font-semibold mb-6">Add New Sweet</h2>
+      {/* Form */}
+      <form
+        onSubmit={handleSubmit}
+        className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-12"
+      >
+        <input
+          placeholder="Name"
+          className="border p-3 rounded"
+          value={form.name}
+          onChange={(e) => setForm({ ...form, name: e.target.value })}
+          required
+        />
 
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-sm font-medium mb-1">Sweet Name</label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-              className="w-full border px-4 py-2 rounded-lg focus:ring-2 focus:ring-red-500 outline-none"
-            />
-          </div>
+        <select
+          className="border p-3 rounded"
+          value={form.category}
+          onChange={(e) => setForm({ ...form, category: e.target.value })}
+        >
+          <option>Dessert</option>
+          <option>Traditional</option>
+          <option>Premium</option>
+        </select>
 
-          <div>
-            <label className="block text-sm font-medium mb-1">Category</label>
-            <select
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-              required
-              className="w-full border px-4 py-2 rounded-lg focus:ring-2 focus:ring-red-500 outline-none"
-            >
-              <option value="">Select category</option>
-              <option>Dessert</option>
-              <option>Traditional</option>
-              <option>Premium</option>
-            </select>
-          </div>
+        <input
+          placeholder="Price"
+          type="number"
+          className="border p-3 rounded"
+          value={form.price}
+          onChange={(e) => setForm({ ...form, price: e.target.value })}
+          required
+        />
 
-          <div>
-            <label className="block text-sm font-medium mb-1">Price (₹)</label>
-            <input
-              type="number"
-              name="price"
-              value={formData.price}
-              onChange={handleChange}
-              required
-              className="w-full border px-4 py-2 rounded-lg focus:ring-2 focus:ring-red-500 outline-none"
-            />
-          </div>
+        <input
+          placeholder="Quantity"
+          type="number"
+          className="border p-3 rounded"
+          value={form.quantity}
+          onChange={(e) => setForm({ ...form, quantity: e.target.value })}
+          required
+        />
 
-          <div>
-            <label className="block text-sm font-medium mb-1">Quantity</label>
-            <input
-              type="number"
-              name="quantity"
-              value={formData.quantity}
-              onChange={handleChange}
-              required
-              className="w-full border px-4 py-2 rounded-lg focus:ring-2 focus:ring-red-500 outline-none"
-            />
-          </div>
+        <button className="col-span-full bg-red-600 text-white py-3 rounded">
+          Add Sweet
+        </button>
+      </form>
 
-          <div className="md:col-span-2">
+      {/* Table */}
+      <div className="space-y-4">
+        {sweets.map((sweet) => (
+          <div
+            key={sweet._id}
+            className="flex justify-between items-center border p-4 rounded"
+          >
+            <div>
+              <h3 className="font-semibold">{sweet.name}</h3>
+              <p className="text-sm text-gray-600">
+                ₹{sweet.price} | Qty: {sweet.quantity}
+              </p>
+            </div>
             <button
-              type="submit"
-              className="w-full bg-red-600 text-white py-3 rounded-xl font-semibold hover:bg-red-700 transition"
+              onClick={() => handleDelete(sweet._id)}
+              className="text-red-600"
             >
-              Add Sweet
+              Delete
             </button>
           </div>
-        </form>
+        ))}
       </div>
     </div>
   );

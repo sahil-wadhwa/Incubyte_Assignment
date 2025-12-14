@@ -53,3 +53,33 @@ export const deleteSweet = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+export const searchSweets = async (req, res) => {
+  try {
+    const { name, category, minPrice, maxPrice } = req.query;
+
+    const query = {};
+
+    if (name) {
+      query.name = { $regex: name, $options: "i" };
+    }
+
+    if (category) {
+      query.category = category;
+    }
+
+    if (minPrice || maxPrice) {
+      query.price = {};
+      if (minPrice) query.price.$gte = Number(minPrice);
+      if (maxPrice) query.price.$lte = Number(maxPrice);
+    }
+
+    const sweets = await Sweet.find(query);
+    res.json(sweets);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+

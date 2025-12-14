@@ -1,19 +1,23 @@
-const BASE_URL = "http://localhost:5051/api/sweets";
+const API_BASE_URL = "http://localhost:5051/api";
 
-export const getSweets = async () => {
-  const res = await fetch(BASE_URL);
-  return res.json();
-};
-
-export const createSweet = async (data) => {
-  const res = await fetch(BASE_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+export const apiRequest = async (
+  endpoint,
+  { method = "GET", body, token } = {}
+) => {
+  const res = await fetch(`${API_BASE_URL}${endpoint}`, {
+    method,
+    headers: {
+      "Content-Type": "application/json",
+      ...(token && { Authorization: `Bearer ${token}` }),
+    },
+    ...(body && { body: JSON.stringify(body) }),
   });
-  return res.json();
-};
 
-export const deleteSweet = async (id) => {
-  await fetch(`${BASE_URL}/${id}`, { method: "DELETE" });
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.message || "API Error");
+  }
+
+  return data;
 };

@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { getSweets, createSweet, deleteSweet } from "../services/sweetApi";
+import {
+  getSweets,
+  createSweet,
+  restockSweet,
+} from "../services/sweetApi";
+import { getToken } from "../utils/auth";
+import { apiRequest } from "../services/api";
 
 export default function Admin() {
   const [sweets, setSweets] = useState([]);
@@ -9,9 +15,19 @@ export default function Admin() {
     price: "",
     quantity: "",
   });
+  const [email, setEmail] = useState("");
+
+  const promoteUser = async () => {
+    await apiRequest("/auth/make-admin", {
+      method: "POST",
+      body: { email },
+      token: getToken(),
+    });
+    alert("User promoted to admin");
+  };
 
   const loadSweets = async () => {
-    const data = await getSweets();
+    const data = await getSweets(getToken());
     setSweets(data);
   };
 
@@ -21,21 +37,20 @@ export default function Admin() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await createSweet(form);
+    await createSweet(form, getToken());
     setForm({ name: "", category: "Dessert", price: "", quantity: "" });
     loadSweets();
   };
 
-  const handleDelete = async (id) => {
-    await deleteSweet(id);
+  const handleRestock = async (id) => {
+    await restockSweet(id, 10, getToken());
     loadSweets();
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-20">
+    <div className="max-w-6xl mx-auto px-6 py-16">
       <h1 className="text-3xl font-bold mb-8">Admin Panel</h1>
 
-      {/* Form */}
       <form
         onSubmit={handleSubmit}
         className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-12"
@@ -59,8 +74,8 @@ export default function Admin() {
         </select>
 
         <input
-          placeholder="Price"
           type="number"
+          placeholder="Price"
           className="border p-3 rounded"
           value={form.price}
           onChange={(e) => setForm({ ...form, price: e.target.value })}
@@ -68,8 +83,8 @@ export default function Admin() {
         />
 
         <input
-          placeholder="Quantity"
           type="number"
+          placeholder="Quantity"
           className="border p-3 rounded"
           value={form.quantity}
           onChange={(e) => setForm({ ...form, quantity: e.target.value })}
@@ -81,7 +96,6 @@ export default function Admin() {
         </button>
       </form>
 
-      {/* Table */}
       <div className="space-y-4">
         {sweets.map((sweet) => (
           <div
@@ -90,19 +104,33 @@ export default function Admin() {
           >
             <div>
               <h3 className="font-semibold">{sweet.name}</h3>
-              <p className="text-sm text-gray-600">
-                ₹{sweet.price} | Qty: {sweet.quantity}
-              </p>
+              <p className="text-sm">Qty: {sweet.quantity}</p>
             </div>
             <button
-              onClick={() => handleDelete(sweet._id)}
-              className="text-red-600"
+              onClick={() => handleRestock(sweet._id)}
+              className="bg-red-600 text-white px-4 py-2 rounded"
             >
-              Delete
+              Restock +10
             </button>
           </div>
         ))}
       </div>
+      <div className="border p-4 rounded mb-8">
+  <h3 className="font-semibold mb-2">Promote User to Admin</h3>
+  <input
+    type="email"
+    placeholder="User Email"
+    className="border p-2 rounded w-full mb-2"
+    value={email}
+    onChange={(e) => setEmail(e.target.value)}
+  />
+  <button
+    onClick={promoteUser}
+    className="bg-red-600 text-white px-4 py-2 rounded"
+  >
+    Make Admin
+  </button>
+</div>
     </div>
   );
 }

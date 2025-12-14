@@ -1,23 +1,27 @@
-const API_BASE_URL = "http://localhost:5051/api";
+import { apiRequest } from "./api";
 
-export const apiRequest = async (
-  endpoint,
-  { method = "GET", body, token } = {}
-) => {
-  const res = await fetch(`${API_BASE_URL}${endpoint}`, {
-    method,
-    headers: {
-      "Content-Type": "application/json",
-      ...(token && { Authorization: `Bearer ${token}` }),
-    },
-    ...(body && { body: JSON.stringify(body) }),
+export const getSweets = (token) =>
+  apiRequest("/sweets", { token });
+
+export const searchSweets = (query, token) =>
+  apiRequest(`/sweets/search?${query}`, { token });
+
+export const createSweet = (data, token) =>
+  apiRequest("/sweets", {
+    method: "POST",
+    body: data,
+    token,
   });
 
-  const data = await res.json();
+export const purchaseSweet = (id, token) =>
+  apiRequest(`/sweets/${id}/purchase`, {
+    method: "POST",
+    token,
+  });
 
-  if (!res.ok) {
-    throw new Error(data.message || "API Error");
-  }
-
-  return data;
-};
+export const restockSweet = (id, amount, token) =>
+  apiRequest(`/sweets/${id}/restock`, {
+    method: "POST",
+    body: { amount },
+    token,
+  });

@@ -47,3 +47,21 @@ export const login = async (req, res) => {
     token: generateToken(user),
   });
 };
+
+export const makeAdmin = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.role = "admin";
+    await user.save();
+
+    res.json({ message: "User promoted to admin" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

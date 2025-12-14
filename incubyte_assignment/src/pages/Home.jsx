@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { Link } from "react-router-dom";
-import heroBg from "../assets/sweet.jpg";
 
 export default function Home() {
   const [scrolled, setScrolled] = useState(false);
@@ -32,7 +31,7 @@ export default function Home() {
       )}
       {/* Hero Section */}
       <section className="relative bg-white pt-24">
-    <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${heroBg})`, height: "500px", width: "100%" }} />
+    <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url(/hero-bg.jpg)", height: "500px", width: "100%" }} />
     <div className="z-100 max-w-7xl mx-auto px-6 py-24 grid md:grid-cols-2 gap-12 items-center">
         <div className="hidden md:block">
             <div className="bg-white/20 backdrop-blur rounded-3xl p-10 shadow-lg">
